@@ -97,5 +97,103 @@
         console.error("خطا در دریافت داده‌ها:", err);
       });
   </script>
+  <style>
+  .ranking-section {
+    margin-top: 80px;
+    padding: 40px;
+    background: #eef5ff;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    border-top: 2px solid #ccd;
+  }
+
+  .ranking-box {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.1);
+  }
+
+  .ranking-box h3 {
+    font-size: 20px;
+    color: #003366;
+    margin-bottom: 15px;
+  }
+
+  .ranking-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ranking-box li {
+    font-size: 16px;
+    padding: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #333;
+  }
+
+  .medal {
+    font-size: 20px;
+  }
+</style>
+
+<div class="ranking-section" id="rankings">
+  <!-- رتبه‌بندی‌ها اینجا اضافه می‌شن -->
+</div>
+
+<script>
+  function getMedal(index) {
+    const medals = ['🥇', '🥈', '🥉'];
+    return medals[index] || (index + 1);
+  }
+
+  function generateRanking(title, data, key, isNumeric = true) {
+    const sorted = [...data].sort((a, b) => b[key] - a[key]).slice(0, 3);
+    const box = document.createElement("div");
+    box.className = "ranking-box";
+    box.innerHTML = <h3>${title}</h3><ul> +
+      sorted.map((item, i) => `
+        <li><span class="medal">${getMedal(i)}</span> ${item.name} - ${isNumeric ? item[key].toFixed(2) : item[key]}</li>
+      `).join("") +
+      </ul>;
+    return box;
+  }
+
+  fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vQpu5g1FmqmRuDZIIC-HWQAo4XTPisGdXOipRFSo2LJ9HTEtpz8xiyUgMlmOTbn62VJg4UhLqFFkL9t/pub?output=csv")
+    .then(res => res.text())
+    .then(text => {
+      const rows = text.split("\n").slice(1);
+      const data = [];
+
+      rows.forEach(row => {
+        const cols = row.split(",");
+        const name = cols[0]?.trim();
+        const calls = parseInt(cols[1]);
+        const registrations = parseInt(cols[2]);
+        const final = parseFloat(cols[6]);
+        const conversion = parseFloat(cols[10]);
+
+        if (name && !isNaN(final) && !isNaN(calls) && !isNaN(conversion)) {
+          data.push({
+            name,
+            final,
+            calls,
+            conversion
+          });
+        }
+      });
+
+      const rankings = document.getElementById("rankings");
+      rankings.appendChild(generateRanking("برترین کارشناس", data, "final"));
+      rankings.appendChild(generateRanking("برترین تماس‌گیر", data, "calls"));
+      rankings.appendChild(generateRanking("حرفه‌ای‌ترین کارشناس", data, "conversion"));
+    });
+</script>
 </body>
 </html>
