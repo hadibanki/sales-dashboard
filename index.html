@@ -61,12 +61,12 @@
     fetch(SHEET_URL)
       .then(res => res.text())
       .then(text => {
-        const rows = text.split("\n").slice(1); // حذف عنوان ستون‌ها
+        const rows = text.split("\n").slice(1); // حذف عنوان
         const dashboard = document.getElementById("dashboard");
 
         rows.forEach(row => {
           const cols = row.split(",");
-          const name = cols[0];
+          const name = cols[0]?.trim();
           const finalAmount = parseFloat(cols[6]);
 
           if (name && !isNaN(finalAmount)) {
