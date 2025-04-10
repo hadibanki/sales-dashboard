@@ -2,7 +2,7 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>داشبورد درآمد کارشناسان</title>
+  <title>پورسانت شما</title>
   <style>
     body {
       background: #f5f9ff;
@@ -14,7 +14,9 @@
 
     h1 {
       color: #003366;
-      margin-bottom: 40px;
+      font-size: 28px;
+      margin-bottom: 50px;
+      font-weight: bold;
     }
 
     .container {
@@ -30,38 +32,46 @@
       align-items: center;
     }
 
-    .label {
-      font-size: 20px;
-      margin-bottom: 10px;
-      color: #333;
-    }
-
-    .ball {
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle at top left, #ffffffcc, #aad4ff);
-      border-radius: 50%;
-      box-shadow: 0 0 30px #8ecbff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .amount {
       font-size: 26px;
       font-weight: bold;
-      color: #003366;
+      color: #006699;
+      margin-bottom: 10px;
+    }
+
+    .image-box {
+      width: 200px;
+      height: auto;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .image-box img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .label {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <h1>درآمد کارشناسان فروش</h1>
+  <h1>پورسانت شما تا این لحظه!</h1>
   <div class="container" id="dashboard"></div>
 
   <script>
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQpu5g1FmqmRuDZIIC-HWQAo4XTPisGdXOipRFSo2LJ9HTEtpz8xiyUgMlmOTbn62VJg4UhLqFFkL9t/pub?output=csv";
+    const IMAGE_URL = "https://github.com/user-attachments/assets/7e360be0-670d-495f-bb37-bbcc3af99c76";
 
     fetch(SHEET_URL)
       .then(res => res.text())
       .then(text => {
-        const rows = text.split("\n").slice(1); // حذف عنوان
+        const rows = text.split("\n").slice(1);
         const dashboard = document.getElementById("dashboard");
 
         rows.forEach(row => {
@@ -73,8 +83,11 @@
             const card = document.createElement("div");
             card.className = "card";
             card.innerHTML = `
+              <div class="amount">$${finalAmount.toFixed(2)}</div>
+              <div class="image-box">
+                <img src="${IMAGE_URL}" alt="صندوق پورسانت">
+              </div>
               <div class="label">${name}</div>
-              <div class="ball">$${finalAmount.toFixed(2)}</div>
             `;
             dashboard.appendChild(card);
           }
