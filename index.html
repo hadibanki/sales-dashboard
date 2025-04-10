@@ -127,7 +127,7 @@
       box.className = "ranking-box";
       box.innerHTML = `<h3>${title}</h3><ul>` +
         sorted.map((item, i) => `
-          <li><span class="medal">${getMedal(i)}</span> ${item.name} - ${item[key].toFixed(2)}</li>
+          <li><span class="medal">${getMedal(i)}</span> ${item.name}</li>
         `).join("") +
         `</ul>`;
       return box;
