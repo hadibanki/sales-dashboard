@@ -2,40 +2,87 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>داشبورد درآمد کارشناسان فروش</title>
+  <title>داشبورد درآمد کارشناسان</title>
   <style>
     body {
-      background: #f0f0f0;
-      font-family: 'Tahoma', sans-serif;
+      background: #f5f9ff;
+      font-family: Tahoma, sans-serif;
+      direction: rtl;
       text-align: center;
-      padding-top: 50px;
+      padding-top: 40px;
     }
+
+    h1 {
+      color: #003366;
+      margin-bottom: 40px;
+    }
+
     .container {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 30px;
+      gap: 40px;
     }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .label {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
     .ball {
       width: 200px;
       height: 200px;
-      background: radial-gradient(circle at top left, #ffffffaa, #aad4ff);
+      background: radial-gradient(circle at top left, #ffffffcc, #aad4ff);
       border-radius: 50%;
-      box-shadow: 0 0 25px #8ecbff;
+      box-shadow: 0 0 30px #8ecbff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 26px;
       font-weight: bold;
       color: #003366;
-      position: relative;
-    }
-    .label {
-      margin-top: 10px;
-      font-size: 18px;
     }
   </style>
 </head>
 <body>
   <h1>درآمد کارشناسان فروش</h1>
   <div class="container" id="dashboard"></div>
+
+  <script>
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQpu5g1FmqmRuDZIIC-HWQAo4XTPisGdXOipRFSo2LJ9HTEtpz8xiyUgMlmOTbn62VJg4UhLqFFkL9t/pub?output=csv";
+
+    fetch(SHEET_URL)
+      .then(res => res.text())
+      .then(text => {
+        const rows = text.split("\n").slice(1); // حذف عنوان ستون‌ها
+        const dashboard = document.getElementById("dashboard");
+
+        rows.forEach(row => {
+          const cols = row.split(",");
+          const name = cols[0];
+          const finalAmount = parseFloat(cols[6]);
+
+          if (name && !isNaN(finalAmount)) {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+              <div class="label">${name}</div>
+              <div class="ball">$${finalAmount.toFixed(2)}</div>
+            `;
+            dashboard.appendChild(card);
+          }
+        });
+      })
+      .catch(err => {
+        console.error("خطا در دریافت داده‌ها:", err);
+      });
+  </script>
+</body>
+</html>
